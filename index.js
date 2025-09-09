@@ -39,7 +39,14 @@ app.use((req, _res, next) => {
 });
 
 app.get("/", (_req, res) => res.send("VibeCraft backend is running ✅"));
-app.get("/health", (_req, res) => res.json({ ok: true }));
+
+// Health check endpoint for deployment testing
+app.get("/health", (_req, res) => res.json({ 
+  status: "healthy", 
+  service: "VibeCraft backend",
+  timestamp: new Date().toISOString(),
+  version: "1.0.0"
+}));
 
 /* ---------------- Apple: developer token ---------------- */
 app.get("/apple/devtoken", (_req, res) => {
