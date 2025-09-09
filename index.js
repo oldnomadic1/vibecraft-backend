@@ -55,8 +55,20 @@ app.get("/health", (_req, res) => res.json({
 app.get("/apple/devtoken", (_req, res) => {
   try {
     if (!APPLE_TEAM_ID || !APPLE_KEY_ID || !APPLE_PRIVATE_KEY) {
+      console.log("Missing creds:", { 
+        hasTeamId: !!APPLE_TEAM_ID, 
+        hasKeyId: !!APPLE_KEY_ID, 
+        hasPrivateKey: !!APPLE_PRIVATE_KEY,
+        privateKeyStart: APPLE_PRIVATE_KEY?.substring(0, 30)
+      });
       return res.status(400).json({ error: "Missing Apple creds in .env" });
     }
+    console.log("Private key format check:", {
+      hasBeginMarker: APPLE_PRIVATE_KEY.includes('-----BEGIN'),
+      hasEndMarker: APPLE_PRIVATE_KEY.includes('-----END'),
+      length: APPLE_PRIVATE_KEY.length,
+      firstLine: APPLE_PRIVATE_KEY.split('\n')[0]
+    });
     const now = Math.floor(Date.now() / 1000);
     const token = jwt.sign(
       { iss: APPLE_TEAM_ID, iat: now, exp: now + 60 * 55 },
@@ -65,7 +77,7 @@ app.get("/apple/devtoken", (_req, res) => {
     );
     res.json({ token });
   } catch (err) {
-    console.error("Dev token error:", err);
+    console.error("Dev token error:", err.message);
     res.status(500).json({ error: "Failed to sign developer token" });
   }
 });
