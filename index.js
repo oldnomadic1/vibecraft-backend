@@ -20,9 +20,12 @@ const {
   PORT = 3001,
   APPLE_TEAM_ID,
   APPLE_KEY_ID,
-  APPLE_PRIVATE_KEY,
+  APPLE_PRIVATE_KEY: APPLE_PRIVATE_KEY_RAW,
   OPENAI_API_KEY,
 } = process.env;
+
+// Fix private key formatting for deployment environments
+const APPLE_PRIVATE_KEY = APPLE_PRIVATE_KEY_RAW?.replace(/\\n/g, '\n');
 
 const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
